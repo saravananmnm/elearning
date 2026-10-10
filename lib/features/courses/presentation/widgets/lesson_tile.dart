@@ -1,6 +1,6 @@
+import 'package:elearning/features/courses/domain/entities/lesson.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/lesson.dart';
 
 class LessonTile extends StatelessWidget {
   final Lesson lesson;
@@ -14,25 +14,28 @@ class LessonTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       elevation: 0,
       color: lesson.isCompleted
-          ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3)
-          : Theme.of(context).colorScheme.surface,
+          ? colorScheme.primaryContainer.withValues(alpha: 0.3)
+          : colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
         side: BorderSide(
-          color: Colors.grey.shade300,
+          color: colorScheme.outlineVariant,
           width: 1,
         ),
       ),
       child: CheckboxListTile(
         title: Text(
           lesson.title,
-          style: const TextStyle(
+          style: TextStyle(
             decoration: TextDecoration.none,
             fontWeight: FontWeight.w500,
+            color: colorScheme.onSurface,
           ),
         ),
         subtitle: lesson.isCompleted
@@ -41,16 +44,18 @@ class LessonTile extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.check_circle,
                       size: 14,
-                      color: Colors.green.shade700,
+                      color: Colors.green,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       'Completed',
                       style: TextStyle(
-                        color: Colors.green.shade700,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.green.shade300
+                            : Colors.green.shade700,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
@@ -59,30 +64,30 @@ class LessonTile extends StatelessWidget {
                 ),
               )
             : Padding(
-          padding: const EdgeInsets.only(top: 2.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.history,
-                size: 14,
-                color: Colors.pink.shade700,
-              ),
-              const SizedBox(width: 4),
-              Text(
-                'Pending',
-                style: TextStyle(
-                  color: Colors.pink.shade700,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 12,
+                padding: const EdgeInsets.only(top: 2.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.history,
+                      size: 14,
+                      color: colorScheme.outline,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Pending',
+                      style: TextStyle(
+                        color: colorScheme.outline,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
         value: lesson.isCompleted,
         onChanged: onChanged,
-        activeColor: Theme.of(context).colorScheme.primary,
+        activeColor: colorScheme.primary,
         controlAffinity: ListTileControlAffinity.leading,
       ),
     );

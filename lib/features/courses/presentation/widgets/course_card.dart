@@ -1,6 +1,6 @@
+import 'package:elearning/features/courses/domain/entities/course.dart';
 import 'package:flutter/material.dart';
 
-import '../../domain/entities/course.dart';
 
 class CourseCard extends StatelessWidget {
   final Course course;
@@ -16,6 +16,7 @@ class CourseCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final completedCount = course.lessons.where((l) => l.isCompleted).length;
     final totalCount = course.lessons.length;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Card(
       elevation: 2,
@@ -30,17 +31,18 @@ class CourseCard extends StatelessWidget {
               course.title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
+                    color: colorScheme.onSurface,
                   ),
             ),
             const SizedBox(height: 6),
             Row(
               children: [
-                const Icon(Icons.person, size: 16, color: Colors.grey),
+                Icon(Icons.person, size: 16, color: colorScheme.onSurfaceVariant),
                 const SizedBox(width: 4),
                 Text(
                   course.instructor,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Colors.grey[700],
+                        color: colorScheme.onSurfaceVariant,
                       ),
                 ),
               ],
@@ -51,12 +53,15 @@ class CourseCard extends StatelessWidget {
               children: [
                 Text(
                   '$completedCount of $totalCount lessons',
-                  style: Theme.of(context).textTheme.bodySmall,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                 ),
                 Text(
                   '${course.progress}%',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
                       ),
                 ),
               ],
@@ -67,11 +72,9 @@ class CourseCard extends StatelessWidget {
               child: LinearProgressIndicator(
                 value: course.progress / 100.0,
                 minHeight: 8,
-                backgroundColor: Colors.grey[200],
+                backgroundColor: colorScheme.surfaceContainerHighest,
                 valueColor: AlwaysStoppedAnimation<Color>(
-                  course.progress == 100
-                      ? Colors.green
-                      : Theme.of(context).colorScheme.primary,
+                  course.progress == 100 ? Colors.green : colorScheme.primary,
                 ),
               ),
             ),
@@ -81,11 +84,11 @@ class CourseCard extends StatelessWidget {
                 child: TextButton(
                   onPressed: onTap,
                   style: TextButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    backgroundColor: colorScheme.primary,
                   ),
-                  child: const Text(
+                  child: Text(
                     'Continue',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(color: colorScheme.onPrimary),
                   ),
                 ),
               ),

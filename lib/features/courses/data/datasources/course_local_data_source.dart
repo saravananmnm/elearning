@@ -84,8 +84,7 @@ class CourseLocalDataSourceImpl implements CourseLocalDataSource {
           return lesson;
         }).toList();
 
-        final completedCount =
-            mergedLessons.where((l) => l.isCompleted).length;
+        final completedCount = mergedLessons.where((l) => l.isCompleted).length;
         final newProgress = calculateProgress(
           completedLessons: completedCount,
           totalLessons: mergedLessons.length,

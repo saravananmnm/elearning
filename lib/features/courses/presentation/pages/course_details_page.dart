@@ -1,11 +1,11 @@
 import 'dart:async';
+import 'package:elearning/features/courses/presentation/viewmodels/course_details_viewmodel.dart';
+import 'package:elearning/features/courses/presentation/viewmodels/courses_viewmodel.dart';
+import 'package:elearning/features/courses/presentation/widgets/error_view.dart';
+import 'package:elearning/features/courses/presentation/widgets/lesson_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../viewmodels/course_details_viewmodel.dart';
-import '../viewmodels/courses_viewmodel.dart';
-import '../widgets/error_view.dart';
-import '../widgets/lesson_tile.dart';
 
 class CourseDetailsPage extends ConsumerWidget {
   final int courseId;
@@ -18,6 +18,7 @@ class CourseDetailsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(courseDetailsViewModelProvider(courseId));
+    final colorScheme = Theme.of(context).colorScheme;
 
     return PopScope(
       onPopInvokedWithResult: (didPop, result) {
@@ -51,112 +52,177 @@ class CourseDetailsPage extends ConsumerWidget {
               return const ErrorView(message: 'Course not found');
             }
 
-            final completedLessons = course.lessons.where((l) => l.isCompleted).length;
+            final completedLessons =
+                course.lessons.where((l) => l.isCompleted).length;
             final totalLessons = course.lessons.length;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(20.0),
-                  color: Theme.of(context)
-                      .colorScheme
-                      .surfaceContainerHighest
-                      .withValues(alpha: 0.5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        course.title,
-                        style:
-                            Theme.of(context).textTheme.titleLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.person,
-                              size: 18, color: Colors.grey),
-                          const SizedBox(width: 6),
-                          Text(
-                            'Instructor: ${course.instructor}',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '$completedLessons / $totalLessons lessons completed',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          Text(
-                            '${course.progress}%',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(6),
-                        child: LinearProgressIndicator(
-                          value: course.progress / 100.0,
-                          minHeight: 10,
-                          backgroundColor: Colors.grey[300],
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            course.progress == 100
-                                ? Colors.green
-                                : Theme.of(context).colorScheme.primary,
-                          ),
+            final headerWidget = Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20.0),
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    course.title,
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: colorScheme.onSurface,
                         ),
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    children: [
+                      Icon(Icons.person,
+                          size: 18, color: colorScheme.onSurfaceVariant),
+                      const SizedBox(width: 6),
+                      Text(
+                        'Instructor: ${course.instructor}',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: colorScheme.onSurfaceVariant,
+                            ),
                       ),
                     ],
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    'Lessons',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '$completedLessons / $totalLessons lessons completed',
+                        style:
+                            Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurface,
+                                ),
+                      ),
+                      Text(
+                        '${course.progress}%',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.primary,
+                                ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(6),
+                    child: LinearProgressIndicator(
+                      value: course.progress / 100.0,
+                      minHeight: 10,
+                      backgroundColor: colorScheme.surfaceContainerHighest,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        course.progress == 100
+                            ? Colors.green
+                            : colorScheme.primary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final isWide = constraints.maxWidth >= 700;
+
+                if (isWide) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 340,
+                          child: headerWidget,
                         ),
-                  ),
-                ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: course.lessons.length,
-                    itemBuilder: (context, index) {
-                      final lesson = course.lessons[index];
-                      return LessonTile(
-                        lesson: lesson,
-                        onChanged: (_) {
-                          ref
-                              .read(
-                                courseDetailsViewModelProvider(courseId)
-                                    .notifier,
-                              )
-                              .toggleLessonCompletion(lesson.id);
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Lessons',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: colorScheme.onSurface,
+                                    ),
+                              ),
+                              const SizedBox(height: 8),
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: course.lessons.length,
+                                  itemBuilder: (context, index) {
+                                    final lesson = course.lessons[index];
+                                    return LessonTile(
+                                      lesson: lesson,
+                                      onChanged: (_) {
+                                        ref
+                                            .read(
+                                              courseDetailsViewModelProvider(
+                                                      courseId)
+                                                  .notifier,
+                                            )
+                                            .toggleLessonCompletion(lesson.id);
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    headerWidget,
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        'Lessons',
+                        style:
+                            Theme.of(context).textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: colorScheme.onSurface,
+                                ),
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView.builder(
+                        itemCount: course.lessons.length,
+                        itemBuilder: (context, index) {
+                          final lesson = course.lessons[index];
+                          return LessonTile(
+                            lesson: lesson,
+                            onChanged: (_) {
+                              ref
+                                  .read(
+                                    courseDetailsViewModelProvider(courseId)
+                                        .notifier,
+                                  )
+                                  .toggleLessonCompletion(lesson.id);
+                            },
+                          );
                         },
-                      );
-                    },
-                  ),
-                ),
-              ],
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           },
         ),

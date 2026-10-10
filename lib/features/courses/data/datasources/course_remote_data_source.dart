@@ -5,11 +5,8 @@ import '../../../../core/network/dio_client.dart';
 import '../../domain/entities/course.dart';
 import '../../domain/entities/lesson.dart';
 
-final courseRemoteDataSourceProvider =
-    Provider<CourseRemoteDataSource>((ref) {
-  return MockCourseRemoteDataSource(
-    dio: ref.read(dioProvider),
-  );
+final courseRemoteDataSourceProvider = Provider<CourseRemoteDataSource>((ref) {
+  return MockCourseRemoteDataSource( dio: ref.read(dioProvider),);
 });
 
 abstract class CourseRemoteDataSource {

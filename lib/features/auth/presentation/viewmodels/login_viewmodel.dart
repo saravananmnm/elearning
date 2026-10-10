@@ -3,8 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/auth_repository_impl.dart';
 import '../../domain/entities/user.dart';
 
-final loginViewModelProvider =
-    AsyncNotifierProvider<LoginViewModel, User?>(
+final loginViewModelProvider =  AsyncNotifierProvider<LoginViewModel, User?>(
   LoginViewModel.new,
 );
 

@@ -1,13 +1,15 @@
 import 'dart:async';
+import 'package:elearning/core/network/network_info.dart';
+import 'package:elearning/core/utils/responsive_layout.dart';
+import 'package:elearning/core/widgets/app_drawer.dart';
+import 'package:elearning/features/courses/presentation/viewmodels/courses_viewmodel.dart';
+import 'package:elearning/features/courses/presentation/widgets/course_card.dart';
+import 'package:elearning/features/courses/presentation/widgets/empty_courses_view.dart';
+import 'package:elearning/features/courses/presentation/widgets/error_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../../core/network/network_info.dart';
-import '../../../../core/widgets/app_drawer.dart';
-import '../viewmodels/courses_viewmodel.dart';
-import '../widgets/course_card.dart';
-import '../widgets/empty_courses_view.dart';
-import '../widgets/error_view.dart';
+
 
 class CoursesPage extends ConsumerWidget {
   const CoursesPage({super.key});
@@ -77,25 +79,62 @@ class CoursesPage extends ConsumerWidget {
                   );
                 }
 
-                return RefreshIndicator(
-                  onRefresh: () async {
-                    await ref
-                        .read(coursesViewModelProvider.notifier)
-                        .refreshCourses();
-                  },
-                  child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: courses.length,
-                    itemBuilder: (context, index) {
-                      final course = courses[index];
-                      return CourseCard(
-                        course: course,
-                        onTap: () {
-                          context.go('/courses/${course.id}');
+                return LayoutBuilder(
+                  builder: (context, constraints) {
+                    final isWideScreen =
+                        constraints.maxWidth >= ResponsiveBreakpoints.mobile;
+
+                    if (isWideScreen) {
+                      return RefreshIndicator(
+                        onRefresh: () async {
+                          await ref
+                              .read(coursesViewModelProvider.notifier)
+                              .refreshCourses();
                         },
+                        child: GridView.builder(
+                          padding: const EdgeInsets.all(16),
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 450,
+                            mainAxisExtent: 220,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                          itemCount: courses.length,
+                          itemBuilder: (context, index) {
+                            final course = courses[index];
+                            return CourseCard(
+                              course: course,
+                              onTap: () {
+                                context.go('/courses/${course.id}');
+                              },
+                            );
+                          },
+                        ),
                       );
-                    },
-                  ),
+                    }
+
+                    return RefreshIndicator(
+                      onRefresh: () async {
+                        await ref
+                            .read(coursesViewModelProvider.notifier)
+                            .refreshCourses();
+                      },
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        itemCount: courses.length,
+                        itemBuilder: (context, index) {
+                          final course = courses[index];
+                          return CourseCard(
+                            course: course,
+                            onTap: () {
+                              context.go('/courses/${course.id}');
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
                 );
               },
             ),
