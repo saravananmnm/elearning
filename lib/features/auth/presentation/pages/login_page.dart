@@ -147,6 +147,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                             onPressed:
                                 loginState.isLoading ? null : _handleLogin,
                             style: ElevatedButton.styleFrom(
+                              backgroundColor: colorScheme.primary,
                               padding:
                                   const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
@@ -161,9 +162,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : const Text(
+                                : Text(
                                     'Sign In',
-                                    style: TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: 16,color:
+                                    colorScheme.onPrimary),
                                   ),
                           ),
                         ],
