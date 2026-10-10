@@ -5,7 +5,8 @@ A lightweight, offline-first Flutter E-Learning application using **MVVM**, **Ri
 ---
 
 ## Tech Stack
-- **Framework**: Flutter (Material 3)
+- **Framework**: Flutter (Material 3) SDK 3.44.0
+- **Java**: OpenJDK 21.0.0
 - **State & DI**: Flutter Riverpod 2.x (No Code Gen)
 - **Navigation**: GoRouter
 - **HTTP Client**: Dio
