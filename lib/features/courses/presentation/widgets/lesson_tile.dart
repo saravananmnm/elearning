@@ -18,7 +18,7 @@ class LessonTile extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       elevation: 0,
       color: lesson.isCompleted
-          ? Theme.of(context).colorScheme.primaryContainer.withOpacity(0.3)
+          ? Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.3)
           : Theme.of(context).colorScheme.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8),
@@ -30,12 +30,54 @@ class LessonTile extends StatelessWidget {
       child: CheckboxListTile(
         title: Text(
           lesson.title,
-          style: TextStyle(
-            decoration: lesson.isCompleted
-                ? TextDecoration.lineThrough
-                : TextDecoration.none,
-            fontWeight:
-                lesson.isCompleted ? FontWeight.normal : FontWeight.w500,
+          style: const TextStyle(
+            decoration: TextDecoration.none,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        subtitle: lesson.isCompleted
+            ? Padding(
+                padding: const EdgeInsets.only(top: 2.0),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.check_circle,
+                      size: 14,
+                      color: Colors.green.shade700,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Completed',
+                      style: TextStyle(
+                        color: Colors.green.shade700,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            : Padding(
+          padding: const EdgeInsets.only(top: 2.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.history,
+                size: 14,
+                color: Colors.pink.shade700,
+              ),
+              const SizedBox(width: 4),
+              Text(
+                'Pending',
+                style: TextStyle(
+                  color: Colors.pink.shade700,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
+            ],
           ),
         ),
         value: lesson.isCompleted,
