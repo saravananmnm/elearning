@@ -94,9 +94,9 @@ class CourseLocalDataSourceImpl implements CourseLocalDataSource {
           lessons: mergedLessons,
           progress: newProgress,
         );
-        await box.put(course.id, jsonEncode(mergedCourse.toJson()) as Map<dynamic, dynamic>);
+        await box.put(course.id, jsonEncode(mergedCourse.toJson()));
       } else {
-        await box.put(course.id, jsonEncode(course.toJson()) as Map<dynamic, dynamic>);
+        await box.put(course.id, jsonEncode(course.toJson()));
       }
     }
   }
